@@ -36,11 +36,14 @@ public class PatternInfoService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final String DEFAULT_OPTION_DELIMITER = ":";
-
+    // 모든 로그 포맷 정보 담고있는 리스트.
     @Getter
     private List<ReadFieldInfo> fieldList;
 
+    // Separater that divides key and value for each option.
+    private final String DEFAULT_OPTION_KEY_VALUE_SEPERATOR = ":";
+    // Separator that divides each option.
+    private final String DEFAULT_OPTION_SEPARATOR = "&";
 
     @PostConstruct
     public void init() {
@@ -56,14 +59,16 @@ public class PatternInfoService {
     }
 
     /**
-     *
      * Method that  create regex format
      */
-    private void setRegexFormat(ReadFieldInfo fieldInfo) throws InvalidLogFormatException{
+    private void setRegexFormat(ReadFieldInfo fieldInfo) throws InvalidLogFormatException {
+
+        String separatorForValue = DEFAULT_OPTION_KEY_VALUE_SEPERATOR;
+        String separatorForOption = DEFAULT_OPTION_SEPARATOR;
+
         String delimiter = fieldInfo.getDelimiter();
         String[] formats = fieldInfo.getFormat().split(delimiter);
         String[] columns = fieldInfo.getColumns().split(delimiter);
-
 
         if(formats.length < 1 || columns.length < 1) {
             throw new InvalidLogFormatException("Check format, columns, delimiter in configuration file. The length of 'format' or 'columns' separated by delimiter is less than 1");
@@ -73,30 +78,49 @@ public class PatternInfoService {
             throw new InvalidLogFormatException("The length of format in configuration file should be same with the length of colums");
         }
 
-
+        StringBuilder regexSb = new StringBuilder();
         IntStream.range(0, formats.length).forEach(i -> {
+            String format = formats[i];
             try {
-                String format = formats[i];
+
 
                 String type = format;
+                Map<String, String> optionMap = new HashMap<>();
 
-                //if each format has option
+                // Save each option for each columns into map.
                 if(format.indexOf("(") > 0 && format.endsWith(")")) {
                     type = format.substring(0, format.indexOf("("));
+                    String[] options = format.substring(format.indexOf("(") + 1, format.indexOf(")")).split(separatorForOption);
 
-                    //each options is separated by &
+                    Arrays.stream(options).forEach(option -> {
+                        String[] kv = option.split(separatorForValue);
+
+                        if(kv.length != 2) {
+                            logger.warn("Wrong option for {}. each option must have key and value separated by {}", format, separatorForValue);
+                            return;
+                        }
+                        optionMap.put(kv[0], kv[1]);
+
+                    });
 
                 }
 
-                AbstractRegexBuilder builder = AbstractRegexBuilder.getRegexBuilder(FieldType.valueOf(type.toUpperCase()));
+                // Get regex builder according to field type. and add option to it.
+                AbstractRegexBuilder builder = AbstractRegexBuilder.getRegexBuilder(FieldType.valueOf(type));
+                builder.addRegexOptions(optionMap);
+
+                regexSb.append(builder.getValue()).append(delimiter);
 
             } catch (IllegalArgumentException e) {
+                logger.error("Field type {} is not supported.  ", format);
                 e.printStackTrace();
             }
         });
 
+        regexSb.deleteCharAt(regexSb.lastIndexOf(delimiter));
+        fieldInfo.setFormatInRegex(regexSb.toString());
 
-
+        fieldList.add(fieldInfo);
     }
 
 

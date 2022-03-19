@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 /**
  * Class that represents detailed information of each log from setting file
- * and also has compiled data of log format.
+ * and also has compiled regex data of log format.
  * */
 @Getter
 @Setter
@@ -23,7 +23,14 @@ public class ReadFieldInfo {
     private Pattern pattern;
 
     public void setFormatInRegex(String formatInRegex) {
-        Pattern pattern = Pattern.compile(formatInRegex);
+        this.pattern = Pattern.compile(formatInRegex);
         this.formatInRegex = formatInRegex;
+    }
+
+    /*
+     * Check if given string matches regex.
+     */
+    public boolean checkIfMatchLogRegex(String text) {
+        return this.pattern.matcher(text).matches();
     }
 }
