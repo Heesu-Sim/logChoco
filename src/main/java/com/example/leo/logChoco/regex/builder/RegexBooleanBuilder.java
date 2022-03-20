@@ -22,4 +22,10 @@ public class RegexBooleanBuilder extends AbstractRegexBuilder{
         logger.warn("Can't set minimum length to Boolean");
         return this;
     }
+
+    @Override
+    public AbstractRegexBuilder setDateFormat(String format) {
+        logger.warn("Can't set date format to Boolean");
+        return this;
+    }
 }

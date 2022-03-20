@@ -70,4 +70,10 @@ public class RegexIntegerBuilder extends AbstractRegexBuilder {
         return this;
     }
 
+    @Override
+    public AbstractRegexBuilder setDateFormat(String format) {
+        logger.warn("Can't set date format to Integer");
+        return this;
+    }
+
 }

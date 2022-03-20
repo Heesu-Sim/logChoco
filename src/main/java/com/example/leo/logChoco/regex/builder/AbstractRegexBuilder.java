@@ -57,6 +57,8 @@ public abstract class AbstractRegexBuilder {
                 this.setMaxLengthIfSupported(Integer.parseInt(optionValue));
             } else if(FieldOption.MINLENGTH.equals(option)) {
                 this.setMinLengthIfSupported(Integer.parseInt(optionValue));
+            } else if(FieldOption.DATEFORMAT.equals(option)) {
+                this.setDateFormat(optionValue);
             }
         } catch(IllegalArgumentException e) {
             logger.error("option {} is not supported.", key);
@@ -96,5 +98,10 @@ public abstract class AbstractRegexBuilder {
      * Set minimum number of digit or characters
      * */
     abstract public AbstractRegexBuilder setMinLengthIfSupported(int length);
+
+    /**
+     * Set date format
+     * */
+    abstract public AbstractRegexBuilder setDateFormat(String format);
 
 }

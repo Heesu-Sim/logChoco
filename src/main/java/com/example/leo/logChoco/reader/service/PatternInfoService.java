@@ -82,8 +82,6 @@ public class PatternInfoService {
         IntStream.range(0, formats.length).forEach(i -> {
             String format = formats[i];
             try {
-
-
                 String type = format;
                 Map<String, String> optionMap = new HashMap<>();
 
@@ -100,9 +98,7 @@ public class PatternInfoService {
                             return;
                         }
                         optionMap.put(kv[0], kv[1]);
-
                     });
-
                 }
 
                 // Get regex builder according to field type. and add option to it.
@@ -119,10 +115,7 @@ public class PatternInfoService {
 
         regexSb.deleteCharAt(regexSb.lastIndexOf(delimiter));
         fieldInfo.setFormatInRegex(regexSb.toString());
-
-        fieldList.add(fieldInfo);
     }
-
 
 
     private List<ReadFieldInfo> readPatternInfoFile() {

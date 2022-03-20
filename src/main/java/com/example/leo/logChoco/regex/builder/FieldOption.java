@@ -10,5 +10,7 @@ public enum FieldOption {
     MAXLENGTH,
     //min length,
     MINLENGTH,
+    //date format
+    DATEFORMAT
 
 }

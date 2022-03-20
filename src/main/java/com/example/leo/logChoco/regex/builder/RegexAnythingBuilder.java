@@ -17,4 +17,9 @@ public class RegexAnythingBuilder extends AbstractRegexBuilder {
     public AbstractRegexBuilder setMinLengthIfSupported(int length) {
         return this;
     }
+
+    @Override
+    public AbstractRegexBuilder setDateFormat(String format) {
+        return this;
+    }
 }
