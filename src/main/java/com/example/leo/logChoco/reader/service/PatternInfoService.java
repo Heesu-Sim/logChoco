@@ -8,6 +8,7 @@ import com.example.leo.logChoco.regex.builder.AbstractRegexBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,10 @@ import java.util.stream.Stream;
 
 // 설정파일에서 ${DATE}`${TIME_STAMP}`{NUMBER}`{BOOLEAN}
 @Service
+@RequiredArgsConstructor
 public class PatternInfoService {
 
-    @Autowired
-    private LogChocoConfig logChocoConfig;
+    private final LogChocoConfig logChocoConfig;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 

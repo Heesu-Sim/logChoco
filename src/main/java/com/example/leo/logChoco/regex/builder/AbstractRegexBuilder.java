@@ -12,7 +12,7 @@ import java.util.Map;
  * Base class for each type of fields.
  * Extends necessary methods for each field.
  * */
-public abstract class AbstractRegexBuilder {
+abstract public class AbstractRegexBuilder {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -65,14 +65,6 @@ public abstract class AbstractRegexBuilder {
             e.printStackTrace();
         }
     }
-
-//    public AbstractRegexBuilder addOptionToField(AbstractRegexBuilder builder, FieldOption option, Object value) {
-//        if(FieldOption.EMPTY.equals(option)) {
-//            return builder.addPossibleEmpty();
-//        } else if(FieldOption.MAXLENGTH.equals(option)) {
-//            return builder.setMaxLengthIfSupported()
-//        }
-//    }
 
     /**
      * Set if a field can be omitted for all Fields except BOOLEAN
