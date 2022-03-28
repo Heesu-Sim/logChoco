@@ -10,5 +10,5 @@ config:
         protocol: TCP
 
       - port: 20002
-        protocol: TCP
+        protocol: UDP
 

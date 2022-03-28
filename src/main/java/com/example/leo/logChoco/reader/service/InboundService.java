@@ -9,10 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.netty.DisposableServer;
+import reactor.core.publisher.Sinks;
 import reactor.netty.tcp.TcpServer;
+import reactor.netty.udp.UdpServer;
 
 import javax.annotation.PostConstruct;
 import java.time.Duration;
@@ -28,12 +27,15 @@ public class InboundService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final PatternInfoService patternInfoService;
     private final LogChocoConfig logChocoConfig;
     private List<ServerInfo> servers;
+    private Sinks.Many<String> nextSink;
 
     @PostConstruct
     public void init() {
         servers = logChocoConfig.getReceiveServer();
+        nextSink = patternInfoService.getSink();
         runServers();
     }
 
@@ -52,19 +54,27 @@ public class InboundService {
     }
 
     private void runTcpServer(ServerInfo server) {
-        DisposableServer tcpServer = TcpServer.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 2000)
-                .host("localhost")
-                .port(server.getPort())
-                .doOnChannelInit((observer, channel, remoteAddress) -> {
-                })
-                .bindNow();
-
-
+        TcpServer.create()
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 2000)
+            .port(server.getPort())
+            .handle((in, out) -> in.receive().then())
+            .doOnChannelInit((observer, channel, remoteAddress) -> {
+                channel.pipeline().addFirst(new InboundHandler(nextSink));
+            })
+            .bind().subscribe(con -> {
+                logger.info("#### Open TCP port {} for inbound logs", server.getPort());
+            });
     }
 
     private void runUdpServer(ServerInfo server) {
 
+        UdpServer.create()
+                .host("localhost")
+                .port(20002)
+                .handle((in, out) -> in.receive().then())
+                .bind().subscribe(con -> {
+                    logger.info("#### Open UDP port {} for inbound logs", server.getPort());
+                });
     }
 
     private void runTlsServer(ServerInfo server) {

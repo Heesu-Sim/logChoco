@@ -1,6 +1,7 @@
 package com.example.leo.logChoco.reader.service;
 
 import com.example.leo.logChoco.config.LogChocoConfig;
+import com.example.leo.logChoco.entity.BufferInfo;
 import com.example.leo.logChoco.entity.FieldType;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
 import com.example.leo.logChoco.exception.InvalidLogFormatException;
@@ -13,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -33,9 +36,13 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class PatternInfoService {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     private final LogChocoConfig logChocoConfig;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    @Getter
+    protected Sinks.Many<String> sink;
+
 
     // 모든 로그 포맷 정보 담고있는 리스트.
     @Getter
@@ -48,7 +55,12 @@ public class PatternInfoService {
 
     @PostConstruct
     public void init() {
-       fieldList = readPatternInfoFile();
+        sink = Sinks.many().unicast().onBackpressureBuffer();
+        Flux<List<String>> flux = sink.asFlux().bufferTimeout(BufferInfo.BUFFER_SIZE, BufferInfo.BUFFER_DURATION_SECOND);
+        flux.subscribe(s -> {
+        });
+
+        fieldList = readPatternInfoFile();
 
        fieldList.stream().forEach(fieldInfo -> {
            try {
