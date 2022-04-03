@@ -1,0 +1,15 @@
+[
+{
+	"format": ["DATE(DATEFORMAT:yyyy/MM/dd HH:mm:ss.SSS)", "STRING", "IPV4", "INTEGER(MaxLength:5)", "IPV4", "INTEGER(MaxLength:5)", "INTEGER", "INTEGER(empty:true)", "INTEGER(empty:true)", "BOOLEAN"],
+	"columns": ["date", "id", "sip", "sport", "dip", "dport", "serverity", "rxbps", "txbps", "critical"],
+	"delimiter": "'",
+	"idIndex": 1,
+	"logFormat": "LEEF"
+},{
+	"format": ["DATE(DATEFORMAT:yyyy-MM-dd HH:mm:ss.SSS)", "STRING", "IPV4", "INTEGER(MaxLength:5)", "STRING", "IPV4", "INTEGER(MaxLength:5)", "STRING", "INTEGER", "INTEGER(empty:true)", "INTEGER(empty:true)", "BOOLEAN"],
+	"columns": ["date", "id", "sip", "sport", "scountry", "dip", "dport", "dcountry", "serverity", "rxbps", "txbps", "critical"],
+	"delimiter": "'",
+	"idIndex": 1,
+	"logFormat": "LEEF"
+}
+]

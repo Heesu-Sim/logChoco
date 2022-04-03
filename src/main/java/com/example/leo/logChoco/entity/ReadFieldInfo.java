@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -16,9 +17,9 @@ import java.util.regex.Pattern;
 @ToString
 public class ReadFieldInfo {
     // String of key 'format' that is read from setting file.
-    private String format;
+    private List<String> format;
     // String of key 'columns' that is read from setting file.
-    private String columns;
+    private List<String> columns;
     // String of key 'delimiter' that is read from setting file.
     // delimiter for inbound log. Not outbound log.
     // it divide logs into separate value.

@@ -86,6 +86,7 @@ public class PatternInfoService {
 
         if(optional.isPresent()) {
             ReadFieldInfo fieldInfo = optional.get();
+         
 //            String formattedLog = LogFormatterFactory.getFormatter(fieldInfo, log).getFormattedLog();
 
         }
@@ -118,8 +119,10 @@ public class PatternInfoService {
         String separatorForOption = DEFAULT_OPTION_SEPARATOR;
 
         String delimiter = fieldInfo.getDelimiter();
-        String[] formats = fieldInfo.getFormat().split(delimiter);
-        String[] columns = fieldInfo.getColumns().split(delimiter);
+        List<String> formatList = fieldInfo.getFormat();
+        String[] formats = formatList.toArray(new String[formatList.size()]);
+        List<String> columList = fieldInfo.getColumns();
+        String[] columns = columList.toArray(new String[columList.size()]);
 
         if(formats.length < 1 || columns.length < 1) {
             throw new InvalidLogFormatException("Check format, columns, delimiter in configuration file. The length of 'format' or 'columns' separated by delimiter is less than 1");

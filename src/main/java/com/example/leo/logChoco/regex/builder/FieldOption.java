@@ -11,6 +11,8 @@ public enum FieldOption {
     //min length,
     MINLENGTH,
     //date format
-    DATEFORMAT
+    DATEFORMAT,
+    // user defined regular expression
+    REGEX
 
 }

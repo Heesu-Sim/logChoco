@@ -35,7 +35,7 @@ abstract public class AbstractFormatter {
     protected String parseLogIntoKeyValue() {
 
         String delimiter = logInfo.getDelimiter();
-        String columns = fieldInfo.getColumns();
+//        String columns = fieldInfo.getColumns();
 
         return "";
 
