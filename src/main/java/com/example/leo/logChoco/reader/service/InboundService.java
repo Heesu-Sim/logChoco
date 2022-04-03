@@ -1,9 +1,11 @@
 package com.example.leo.logChoco.reader.service;
 
 import com.example.leo.logChoco.config.LogChocoConfig;
-import com.example.leo.logChoco.entity.ServerInfo;
+import com.example.leo.logChoco.config.entity.ServerInfo;
 import com.example.leo.logChoco.reader.InboundHandler;
 import io.netty.channel.ChannelOption;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,6 @@ import reactor.netty.tcp.TcpServer;
 import reactor.netty.udp.UdpServer;
 
 import javax.annotation.PostConstruct;
-import java.time.Duration;
 import java.util.List;
 
 /**
@@ -60,6 +61,7 @@ public class InboundService {
             .handle((in, out) -> in.receive().then())
             .doOnChannelInit((observer, channel, remoteAddress) -> {
                 channel.pipeline().addFirst(new InboundHandler(nextSink));
+                channel.pipeline().addFirst(new DelimiterBasedFrameDecoder(20 * 1024, Delimiters.lineDelimiter()));
             })
             .bind().subscribe(con -> {
                 logger.info("#### Open TCP port {} for inbound logs", server.getPort());

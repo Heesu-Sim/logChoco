@@ -5,7 +5,9 @@ import com.example.leo.logChoco.entity.BufferInfo;
 import com.example.leo.logChoco.entity.FieldType;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
 import com.example.leo.logChoco.exception.InvalidLogFormatException;
+import com.example.leo.logChoco.format.LogFormatterFactory;
 import com.example.leo.logChoco.regex.builder.AbstractRegexBuilder;
+import com.example.leo.logChoco.regex.builder.RegexBuilderFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -22,10 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -46,7 +46,7 @@ public class PatternInfoService {
 
     // 모든 로그 포맷 정보 담고있는 리스트.
     @Getter
-    private List<ReadFieldInfo> fieldList;
+    private List<ReadFieldInfo> fieldInfoList;
 
     // Separater that divides key and value for each option.
     private final String DEFAULT_OPTION_KEY_VALUE_SEPERATOR = ":";
@@ -55,20 +55,58 @@ public class PatternInfoService {
 
     @PostConstruct
     public void init() {
+        initRegexSetting();
+
         sink = Sinks.many().unicast().onBackpressureBuffer();
         Flux<List<String>> flux = sink.asFlux().bufferTimeout(BufferInfo.BUFFER_SIZE, BufferInfo.BUFFER_DURATION_SECOND);
-        flux.subscribe(s -> {
+        flux.subscribe(consumeLogs());
+    }
+
+    /**
+     * Consumer for inbound logs from inboundService.java
+     * */
+    private Consumer<List<String>> consumeLogs() {
+        return logs -> {
+            logs.stream().forEach(log -> {
+                getFormattedLogText(log);
+            });
+        };
+    }
+
+    /**
+     * Receive log text as a parameter.
+     * Iterate fieldInfoList to check if the log matches any log pattern.
+     * If it matches, return formatted log.
+     * */
+    private String getFormattedLogText(String log) {
+
+        Optional<ReadFieldInfo> optional = fieldInfoList.stream()
+                                            .filter(info -> info.checkIfMatchLogRegex(log))
+                                            .findFirst();
+
+        if(optional.isPresent()) {
+            ReadFieldInfo fieldInfo = optional.get();
+//            String formattedLog = LogFormatterFactory.getFormatter(fieldInfo, log).getFormattedLog();
+
+        }
+        return "";
+    }
+
+
+    /**
+     * Read setting file and set regex cache
+     * when process starts
+     * */
+    private void initRegexSetting() {
+        fieldInfoList = readPatternInfoFile();
+
+        fieldInfoList.stream().forEach(fieldInfo -> {
+            try {
+                setRegexFormat(fieldInfo);
+            } catch (InvalidLogFormatException e) {
+                e.printStackTrace();
+            }
         });
-
-        fieldList = readPatternInfoFile();
-
-       fieldList.stream().forEach(fieldInfo -> {
-           try {
-               setRegexFormat(fieldInfo);
-           } catch (InvalidLogFormatException e) {
-               e.printStackTrace();
-           }
-       });
     }
 
     /**
@@ -104,7 +142,7 @@ public class PatternInfoService {
                     String[] options = format.substring(format.indexOf("(") + 1, format.indexOf(")")).split(separatorForOption);
 
                     Arrays.stream(options).forEach(option -> {
-                        String[] kv = option.split(separatorForValue);
+                        String[] kv = option.split(separatorForValue,2 );
 
                         if(kv.length != 2) {
                             logger.warn("Wrong option for {}. each option must have key and value separated by {}", format, separatorForValue);
@@ -115,7 +153,7 @@ public class PatternInfoService {
                 }
 
                 // Get regex builder according to field type. and add option to it.
-                AbstractRegexBuilder builder = AbstractRegexBuilder.getRegexBuilder(FieldType.valueOf(type));
+                AbstractRegexBuilder builder = RegexBuilderFactory.getRegexBuilder(FieldType.valueOf(type));
                 builder.addRegexOptions(optionMap);
 
                 regexSb.append(builder.getValue()).append(delimiter);

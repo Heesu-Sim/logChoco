@@ -1,5 +1,6 @@
-package com.example.leo.logChoco.entity;
+package com.example.leo.logChoco.config.entity;
 
+import com.example.leo.logChoco.entity.NetworkProtocol;
 import lombok.Getter;
 import lombok.Setter;
 

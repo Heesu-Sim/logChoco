@@ -1,5 +1,6 @@
 package com.example.leo.logChoco.entity;
 
+import com.example.leo.logChoco.format.OutboundLogFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,9 +15,16 @@ import java.util.regex.Pattern;
 @Setter
 @ToString
 public class ReadFieldInfo {
+    // String of key 'format' that is read from setting file.
     private String format;
+    // String of key 'columns' that is read from setting file.
     private String columns;
+    // String of key 'delimiter' that is read from setting file.
+    // delimiter for inbound log. Not outbound log.
+    // it divide logs into separate value.
     private String delimiter;
+    // String of key 'logFormat' that is read from setting file.
+    private OutboundLogFormat logFormat;
     private int idIndex;
 
     private String formatInRegex;

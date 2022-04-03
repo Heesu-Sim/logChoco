@@ -36,6 +36,7 @@ public class InboundHandler extends ChannelInboundHandlerAdapter {
         String msg = in.toString(CharsetUtil.UTF_8);
 
         sink.emitNext(msg, Sinks.EmitFailureHandler.FAIL_FAST);
+        in.release();
 
     }
 }

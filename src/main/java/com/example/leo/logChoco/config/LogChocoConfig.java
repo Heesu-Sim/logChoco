@@ -1,6 +1,7 @@
 package com.example.leo.logChoco.config;
 
-import com.example.leo.logChoco.entity.ServerInfo;
+import com.example.leo.logChoco.config.entity.LogInfo;
+import com.example.leo.logChoco.config.entity.ServerInfo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,11 +18,9 @@ public class LogChocoConfig {
     private String filePath;
 
     @NestedConfigurationProperty
+    private LogInfo logInfo;
+    @NestedConfigurationProperty
     private List<ServerInfo> receiveServer;
-
     @NestedConfigurationProperty
     private List<ServerInfo> sendServer;
-
-
-
 }

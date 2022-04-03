@@ -5,6 +5,17 @@ server:
 config:
   file-path: /Users/Heesu/Documents/file/format.json
 
+  # create log header or  required information.
+  log-info:
+    leef-version: 2.0
+    vendor: Leo
+    product-name: log-choco
+    product-version: 1.0
+
+
+
+
+  #set server information which receives logs from.
   receive-server:
       - port: 20001
         protocol: TCP
