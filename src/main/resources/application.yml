@@ -6,11 +6,12 @@ config:
   file-path: /Users/Heesu/Documents/file/format.json
 
   # create log header or  required information.
-  log-info:
+  outbound-log-info:
     leef-version: 2.0
     vendor: Leo
     product-name: log-choco
     product-version: 1.0
+    delimiter: ','
 
 
 

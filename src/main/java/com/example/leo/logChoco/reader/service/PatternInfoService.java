@@ -1,6 +1,7 @@
 package com.example.leo.logChoco.reader.service;
 
 import com.example.leo.logChoco.config.LogChocoConfig;
+import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.entity.BufferInfo;
 import com.example.leo.logChoco.entity.FieldType;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
@@ -86,8 +86,10 @@ public class PatternInfoService {
 
         if(optional.isPresent()) {
             ReadFieldInfo fieldInfo = optional.get();
-         
-//            String formattedLog = LogFormatterFactory.getFormatter(fieldInfo, log).getFormattedLog();
+            OutboundLogInfo outboundLogInfo = logChocoConfig.getOutboundLogInfo();
+
+            String formattedLog = LogFormatterFactory.getFormatter(outboundLogInfo, fieldInfo, log).getFormattedLog();
+
 
         }
         return "";
@@ -122,13 +124,13 @@ public class PatternInfoService {
         List<String> formatList = fieldInfo.getFormat();
         String[] formats = formatList.toArray(new String[formatList.size()]);
         List<String> columList = fieldInfo.getColumns();
-        String[] columns = columList.toArray(new String[columList.size()]);
 
-        if(formats.length < 1 || columns.length < 1) {
+
+        if(formatList.size() < 1 || columList.size() < 1) {
             throw new InvalidLogFormatException("Check format, columns, delimiter in configuration file. The length of 'format' or 'columns' separated by delimiter is less than 1");
         }
 
-        if(formats.length != columns.length) {
+        if(formatList.size() != columList.size()) {
             throw new InvalidLogFormatException("The length of format in configuration file should be same with the length of colums");
         }
 

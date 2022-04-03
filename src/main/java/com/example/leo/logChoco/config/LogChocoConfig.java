@@ -1,6 +1,6 @@
 package com.example.leo.logChoco.config;
 
-import com.example.leo.logChoco.config.entity.LogInfo;
+import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.config.entity.ServerInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class LogChocoConfig {
     private String filePath;
 
     @NestedConfigurationProperty
-    private LogInfo logInfo;
+    private OutboundLogInfo outboundLogInfo;
     @NestedConfigurationProperty
     private List<ServerInfo> receiveServer;
     @NestedConfigurationProperty

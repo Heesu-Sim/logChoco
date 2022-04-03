@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * */
 @Getter
 @Setter
-public class LogInfo {
+public class OutboundLogInfo {
 
     // version of leef format
     private String leefVersion;
