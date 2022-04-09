@@ -1,6 +1,7 @@
 package com.example.leo.logChoco.format;
 
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
+import com.example.leo.logChoco.entity.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
 import lombok.Getter;
 
@@ -12,16 +13,18 @@ import java.util.stream.IntStream;
 @Getter
 abstract public class AbstractFormatter {
 
-    private OutboundLogInfo outboundLogInfo;
-    private List<String> logTextList;
-    private ReadFieldInfo fieldInfo;
+    protected OutboundLogInfo outboundLogInfo;
+    protected List<String> logTextList;
+    protected String eventId;
+    protected ReadFieldInfo fieldInfo;
+    protected String remoteAddr;
 
-    public AbstractFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, String logText) {
-        logTextList = changeLogTextIntoList(fieldInfo, logText);
+    public AbstractFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
+        this.logTextList = changeLogTextIntoList(fieldInfo, inboundLog.getReceivedLog());
         this.outboundLogInfo = outboundLogInfo;
         this.fieldInfo = fieldInfo;
-
-
+        this.eventId = logTextList.get(fieldInfo.getIdIndex());
+        this.remoteAddr = inboundLog.getRemoteAddr();
     }
 
     /**
@@ -52,9 +55,8 @@ abstract public class AbstractFormatter {
      * parse inbound log into key and value.
      * each key value is delimited by delimiter in yml file.
      * */
-    protected String parseLogIntoKeyValue() {
+    protected String parseLogIntoKeyValue(String delimiter) {
 
-        String delimiter = outboundLogInfo.getDelimiter();
         List<String> columnList = fieldInfo.getColumns();
 
         String result = (String) IntStream.range(0, columnList.size())

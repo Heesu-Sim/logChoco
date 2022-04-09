@@ -4,6 +4,7 @@ import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.entity.BufferInfo;
 import com.example.leo.logChoco.entity.FieldType;
+import com.example.leo.logChoco.entity.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
 import com.example.leo.logChoco.exception.InvalidLogFormatException;
 import com.example.leo.logChoco.format.LogFormatterFactory;
@@ -41,7 +42,7 @@ public class PatternInfoService {
     private final LogChocoConfig logChocoConfig;
 
     @Getter
-    protected Sinks.Many<String> sink;
+    protected Sinks.Many<InboundLog> sink;
 
 
     // 모든 로그 포맷 정보 담고있는 리스트.
@@ -58,14 +59,14 @@ public class PatternInfoService {
         initRegexSetting();
 
         sink = Sinks.many().unicast().onBackpressureBuffer();
-        Flux<List<String>> flux = sink.asFlux().bufferTimeout(BufferInfo.BUFFER_SIZE, BufferInfo.BUFFER_DURATION_SECOND);
+        Flux<List<InboundLog>> flux = sink.asFlux().bufferTimeout(BufferInfo.BUFFER_SIZE, BufferInfo.BUFFER_DURATION_SECOND);
         flux.subscribe(consumeLogs());
     }
 
     /**
      * Consumer for inbound logs from inboundService.java
      * */
-    private Consumer<List<String>> consumeLogs() {
+    private Consumer<List<InboundLog>> consumeLogs() {
         return logs -> {
             logs.stream().forEach(log -> {
                 getFormattedLogText(log);
@@ -78,21 +79,19 @@ public class PatternInfoService {
      * Iterate fieldInfoList to check if the log matches any log pattern.
      * If it matches, return formatted log.
      * */
-    private String getFormattedLogText(String log) {
+    private void getFormattedLogText(InboundLog inboundLog) {
 
         Optional<ReadFieldInfo> optional = fieldInfoList.stream()
-                                            .filter(info -> info.checkIfMatchLogRegex(log))
+                                            .filter(info -> info.checkIfMatchLogRegex(inboundLog.getReceivedLog()))
                                             .findFirst();
 
         if(optional.isPresent()) {
             ReadFieldInfo fieldInfo = optional.get();
             OutboundLogInfo outboundLogInfo = logChocoConfig.getOutboundLogInfo();
 
-            String formattedLog = LogFormatterFactory.getFormatter(outboundLogInfo, fieldInfo, log).getFormattedLog();
-
+            String formattedLog = LogFormatterFactory.getFormatter(outboundLogInfo, fieldInfo, inboundLog).getFormattedLog();
 
         }
-        return "";
     }
 
 

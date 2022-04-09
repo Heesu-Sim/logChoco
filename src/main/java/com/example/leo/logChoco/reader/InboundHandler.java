@@ -1,5 +1,6 @@
 package com.example.leo.logChoco.reader;
 
+import com.example.leo.logChoco.entity.InboundLog;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -8,10 +9,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
 import reactor.core.publisher.Sinks;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
 public class InboundHandler extends ChannelInboundHandlerAdapter {
 
-    private Sinks.Many<String> sink;
-    public InboundHandler(Sinks.Many<String> sink) {
+    private Sinks.Many<InboundLog> sink;
+    public InboundHandler(Sinks.Many<InboundLog> sink) {
         this.sink = sink;
     }
 
@@ -32,10 +36,16 @@ public class InboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object buf) throws Exception {
 
-        ByteBuf in = (ByteBuf) buf;
-        String msg = in.toString(CharsetUtil.UTF_8);
+        InetSocketAddress sock = (InetSocketAddress) ctx.channel().remoteAddress();
 
-        sink.emitNext(msg, Sinks.EmitFailureHandler.FAIL_FAST);
+        String addr = sock.getAddress().getHostAddress();
+
+        ByteBuf in = (ByteBuf) buf;
+        String log = in.toString(CharsetUtil.UTF_8);
+
+        InboundLog inboundLog = new InboundLog(addr, log);
+
+        sink.emitNext(inboundLog, Sinks.EmitFailureHandler.FAIL_FAST);
         in.release();
 
     }

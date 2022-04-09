@@ -21,7 +21,11 @@ public class OutboundLogInfo {
     // version of product that send logs
     private String productVersion;
     // delimiter for outbound log.
-    private String delimiter = "\t";
+    private String delimiter;
+
+
+    // include syslog header or not
+    private boolean includeSyslogHeader;
 
 
 }
