@@ -1,5 +1,5 @@
 package com.example.leo.logChoco.entity;
 
 public enum NetworkProtocol {
-    TCP, UDP, TLS
+    TCP, UDP, TLS, HTTP
 }

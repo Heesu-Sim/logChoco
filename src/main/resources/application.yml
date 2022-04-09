@@ -15,13 +15,21 @@ config:
     include-syslog-header: true
 
 
-
-
   #set server information which receives logs from.
   receive-server:
-      - port: 20001
-        protocol: TCP
+    - port: 20001
+      protocol: TCP
 
-      - port: 20002
-        protocol: UDP
+    - port: 20002
+      protocol: UDP
+
+  #set servers information which send logs to
+  target-server:
+    - ip: 127.0.0.1
+      port: 30001
+      protocol: TCP
+
+
+
+
 

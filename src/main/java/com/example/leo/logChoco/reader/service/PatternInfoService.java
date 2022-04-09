@@ -10,6 +10,7 @@ import com.example.leo.logChoco.exception.InvalidLogFormatException;
 import com.example.leo.logChoco.format.LogFormatterFactory;
 import com.example.leo.logChoco.regex.builder.AbstractRegexBuilder;
 import com.example.leo.logChoco.regex.builder.RegexBuilderFactory;
+import com.example.leo.logChoco.sender.service.OutboundLogService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -40,10 +41,10 @@ public class PatternInfoService {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private final LogChocoConfig logChocoConfig;
+    private final OutboundLogService outboundLogService;
 
     @Getter
     protected Sinks.Many<InboundLog> sink;
-
 
     // 모든 로그 포맷 정보 담고있는 리스트.
     @Getter
@@ -68,9 +69,7 @@ public class PatternInfoService {
      * */
     private Consumer<List<InboundLog>> consumeLogs() {
         return logs -> {
-            logs.stream().forEach(log -> {
-                getFormattedLogText(log);
-            });
+            getFormattedLogText(logs);
         };
     }
 
@@ -79,19 +78,33 @@ public class PatternInfoService {
      * Iterate fieldInfoList to check if the log matches any log pattern.
      * If it matches, return formatted log.
      * */
-    private void getFormattedLogText(InboundLog inboundLog) {
+    private void getFormattedLogText(List<InboundLog> inboundLogList) {
 
-        Optional<ReadFieldInfo> optional = fieldInfoList.stream()
-                                            .filter(info -> info.checkIfMatchLogRegex(inboundLog.getReceivedLog()))
-                                            .findFirst();
 
-        if(optional.isPresent()) {
-            ReadFieldInfo fieldInfo = optional.get();
-            OutboundLogInfo outboundLogInfo = logChocoConfig.getOutboundLogInfo();
 
-            String formattedLog = LogFormatterFactory.getFormatter(outboundLogInfo, fieldInfo, inboundLog).getFormattedLog();
 
-        }
+        InboundLog[] arry = new InboundLog[inboundLogList.size()];
+        inboundLogList.toArray(arry);
+
+
+        Flux<InboundLog> flux = Flux.just(arry);
+
+        flux.doOnComplete(() -> {
+            outboundLogService.getSink().emitComplete(Sinks.EmitFailureHandler.FAIL_FAST);
+            logger.debug("Change log format. size : {}", arry.length);
+        }).subscribe(inboundLog -> {
+            Optional<ReadFieldInfo> optional = fieldInfoList.stream()
+            .filter(info -> info.checkIfMatchLogRegex(inboundLog.getReceivedLog()))
+            .findFirst();
+
+            if(optional.isPresent()) {
+                ReadFieldInfo fieldInfo = optional.get();
+                OutboundLogInfo outboundLogInfo = logChocoConfig.getOutboundLogInfo();
+
+                String formattedLog = LogFormatterFactory.getFormatter(outboundLogInfo, fieldInfo, inboundLog).getFormattedLog();
+                outboundLogService.getSink().emitNext(formattedLog, Sinks.EmitFailureHandler.FAIL_FAST);
+            }
+        });
     }
 
 

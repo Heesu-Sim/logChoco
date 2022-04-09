@@ -22,5 +22,6 @@ public class LogChocoConfig {
     @NestedConfigurationProperty
     private List<ServerInfo> receiveServer;
     @NestedConfigurationProperty
-    private List<ServerInfo> sendServer;
+    private List<ServerInfo> targetServer;
+
 }
