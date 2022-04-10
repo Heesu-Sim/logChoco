@@ -81,17 +81,10 @@ public class PatternInfoService {
     private void getFormattedLogText(List<InboundLog> inboundLogList) {
 
 
-
-
-        InboundLog[] arry = new InboundLog[inboundLogList.size()];
-        inboundLogList.toArray(arry);
-
-
-        Flux<InboundLog> flux = Flux.just(arry);
+        Flux<InboundLog> flux = Flux.fromStream(inboundLogList.stream());
 
         flux.doOnComplete(() -> {
-            outboundLogService.getSink().emitComplete(Sinks.EmitFailureHandler.FAIL_FAST);
-            logger.debug("Change log format. size : {}", arry.length);
+            logger.debug("Change log format. size : {}", inboundLogList.size());
         }).subscribe(inboundLog -> {
             Optional<ReadFieldInfo> optional = fieldInfoList.stream()
             .filter(info -> info.checkIfMatchLogRegex(inboundLog.getReceivedLog()))

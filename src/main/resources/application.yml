@@ -26,7 +26,7 @@ config:
   #set servers information which send logs to
   target-server:
     - ip: 127.0.0.1
-      port: 30001
+      port: 35000
       protocol: TCP
 
 
