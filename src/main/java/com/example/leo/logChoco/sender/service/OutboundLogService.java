@@ -29,7 +29,6 @@ public class OutboundLogService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private final LogChocoConfig logChocoConfig;
-    private final ConnectionService connectionService;
 
     @Getter
     protected Sinks.Many<String> sink;
@@ -38,10 +37,7 @@ public class OutboundLogService {
     private List<TcpClient> tcpClientList;
     private List<UdpClient> udpClientList;
     private List<HttpClient> httpClient;
-
-//    private List<Mono<Connection>> connectionMonoList;
-
-
+    
     @PostConstruct
     public void init() {
 
@@ -59,14 +55,9 @@ public class OutboundLogService {
 
                     logFlux.doOnComplete(() -> {
                         disposeConnection(connectionMonoList);
-                    })
-                            .subscribe(log -> {
-                                connection.outbound().sendString(Mono.just(log), CharsetUtil.UTF_8).then().subscribe();
-                            });
-//                    logs.stream().forEach(log -> {
-//                        connection.outbound().sendString(Mono.just(log), CharsetUtil.UTF_8).then().subscribe();
-//                    });
-
+                    }).subscribe(log -> {
+                        connection.outbound().sendString(Mono.just(log), CharsetUtil.UTF_8).then().subscribe();
+                    });
                 });
             });
         });
