@@ -13,6 +13,7 @@ public class LogFormatterFactory {
         AbstractFormatter formatter = switch(logFormat) {
             case CEF -> new CefLogFormatter(outboundLogInfo, fieldInfo, inboundLog);
             case LEEF ->  new LeefLogFormatter(outboundLogInfo, fieldInfo, inboundLog);
+            case JSON ->  new JsonFormatter(outboundLogInfo, fieldInfo, inboundLog);
             default -> new LeefLogFormatter(outboundLogInfo, fieldInfo, inboundLog);
         };
 

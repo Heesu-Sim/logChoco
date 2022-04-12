@@ -55,25 +55,41 @@ abstract public class AbstractFormatter {
      * parse inbound log into key and value.
      * each key value is delimited by delimiter in yml file.
      * */
-    protected String parseLogIntoKeyValue(String delimiter) {
+    protected String parseLogIntoKeyValue(String delimiter, boolean isJson) {
 
         List<String> columnList = fieldInfo.getColumns();
 
         String result = (String) IntStream.range(0, columnList.size())
                 .mapToObj(i -> {
-                    StringBuilder sb = new StringBuilder();
                     String key = columnList.get(i);
                     String value = logTextList.get(i);
 
-                    return sb.append(key).append("=").append(value).toString();
+                    return getKeyValue(key, value, isJson);
                 })
                 .collect(Collectors.joining(delimiter));
 
 
         return result;
+    }
 
+    private String getKeyValue(String key, String value, boolean isJson) {
+        StringBuilder sb = new StringBuilder();
+        String delimiter = "=";
 
+        if(isJson) {
+            delimiter = ":";
+            key = "\"" + key + "\"";
+            value = "\"" + value + "\"";
+        }
 
+        sb.append(key).append(delimiter).append(value).toString();
+
+        String result = sb.toString();
+//        if(needDoubleQuote) {
+//            result = result.replace(key, "\"" + key + "\"");
+////                    .replace(value, "\"" + value + "\"");
+//        }
+        return result;
     }
 
 

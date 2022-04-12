@@ -19,14 +19,14 @@ public class LeefLogFormatter extends AbstractFormatter {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private final String DEFAULT_LEEF_VERSION = "2.0";
-    private final String DEFAULT_LEEF_DELIMITER = "\t";
+    private final String DEFAULT_LEEF_DELIMITER_FOR_LEEF = "\t";
     private String delimiter;
 
     public LeefLogFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
         super(outboundLogInfo, fieldInfo, inboundLog);
 
         String configDelimiter = super.outboundLogInfo.getDelimiter();
-        delimiter = StringUtils.hasText(configDelimiter) ? configDelimiter : DEFAULT_LEEF_DELIMITER;
+        delimiter = StringUtils.hasText(configDelimiter) ? configDelimiter : DEFAULT_LEEF_DELIMITER_FOR_LEEF;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class LeefLogFormatter extends AbstractFormatter {
 
         if(leefVersion.equals(DEFAULT_LEEF_VERSION)) {
             sb.append("|");
-            if(!delimiter.equals(DEFAULT_LEEF_DELIMITER)) {
+            if(!delimiter.equals(DEFAULT_LEEF_DELIMITER_FOR_LEEF)) {
                 sb.append(delimiter);
             }
             sb.append("|");
@@ -79,7 +79,7 @@ public class LeefLogFormatter extends AbstractFormatter {
 
     @Override
     protected String createBody() {
-        String body = parseLogIntoKeyValue(delimiter);
+        String body = parseLogIntoKeyValue(delimiter, false);
         return body;
     }
 

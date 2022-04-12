@@ -7,12 +7,13 @@ import org.springframework.util.StringUtils;
 
 public class JsonFormatter extends AbstractFormatter {
 
+    private final String DEFAULT_LEEF_DELIMITER_FOR_JSON = ",";
     private String delimiter;
     public JsonFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
         super(outboundLogInfo, fieldInfo, inboundLog);
 
 //        String configDelimiter = super.outboundLogInfo.getDelimiter();
-//        delimiter = StringUtils.hasText(configDelimiter) ? configDelimiter : DEFAULT_LEEF_DELIMITER;
+        delimiter = DEFAULT_LEEF_DELIMITER_FOR_JSON;
     }
 
     @Override
@@ -27,6 +28,6 @@ public class JsonFormatter extends AbstractFormatter {
 
     @Override
     protected String createBody() {
-        return super.parseLogIntoKeyValue(delimiter);
+        return super.parseLogIntoKeyValue(delimiter, true);
     }
 }
