@@ -3,7 +3,7 @@ package com.example.leo.logChoco.reader.service;
 import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.entity.BufferInfo;
-import com.example.leo.logChoco.entity.FieldType;
+import com.example.leo.logChoco.regex.FieldType;
 import com.example.leo.logChoco.entity.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
 import com.example.leo.logChoco.exception.InvalidLogFormatException;
@@ -53,7 +53,7 @@ public class PatternInfoService {
     // Separater that divides key and value for each option.
     private final String DEFAULT_OPTION_KEY_VALUE_SEPERATOR = ":";
     // Separator that divides each option.
-    private final String DEFAULT_OPTION_SEPARATOR = "&";
+    private final String DEFAULT_OPTION_SEPARATOR = ",";
 
     @PostConstruct
     public void init() {
@@ -87,8 +87,8 @@ public class PatternInfoService {
             logger.debug("Change log format. size : {}", inboundLogList.size());
         }).subscribe(inboundLog -> {
             Optional<ReadFieldInfo> optional = fieldInfoList.stream()
-            .filter(info -> info.checkIfMatchLogRegex(inboundLog.getReceivedLog()))
-            .findFirst();
+                    .filter(info -> info.checkIfMatchLogRegex(inboundLog.getReceivedLog()))
+                    .findFirst();
 
             if(optional.isPresent()) {
                 ReadFieldInfo fieldInfo = optional.get();

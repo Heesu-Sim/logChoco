@@ -11,9 +11,10 @@ public class FieldsInRegex {
 
     public final static String REGEX_FLOAT = "([+-]?([0-9]*[.])?[0-9]+)";
     public final static String REGEX_INTEGER = "((-+)?([0-9]+))";
-    public final static String REGEX_BOOLEAN = "(true|false)";
+    public final static String REGEX_BOOLEAN = "(true|false|0|1)";
     public final static String REGEX_IPV4 = "((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
     public final static String REGEX_ANYTHING = "(.*)";
+    public final static String REGEX_ALPHABET = "([a-zA-Z])";
 
     public final static String REGEX_DATE_YEAR = "(\\\\d{4})";
     public final static String REGEX_DATE_MONTH = "(0[1-9]|1[012])";
