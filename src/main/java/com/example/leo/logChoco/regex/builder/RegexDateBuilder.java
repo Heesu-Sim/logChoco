@@ -30,6 +30,12 @@ public class RegexDateBuilder extends AbstractRegexBuilder {
     }
 
     @Override
+    public AbstractRegexBuilder setExactLengthIfSupported(int length) {
+        logger.warn("Can't set exact length to Date : {}", length);
+        return this;
+    }
+
+    @Override
     public AbstractRegexBuilder setMaxLengthIfSupported(int length) {
         logger.warn("Can't set max length to Date");
         return this;

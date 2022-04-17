@@ -12,6 +12,12 @@ public class RegexBooleanBuilder extends AbstractRegexBuilder{
     }
 
     @Override
+    public AbstractRegexBuilder setExactLengthIfSupported(int length) {
+        logger.warn("Can't set exact length to Boolean : {}", length);
+        return this;
+    }
+
+    @Override
     public AbstractRegexBuilder setMaxLengthIfSupported(int length) {
         logger.warn("Can't set max length to Boolean");
         return this;

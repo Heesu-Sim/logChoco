@@ -11,7 +11,33 @@ public class RegexAlphabetBuilder extends AbstractRegexBuilder {
     }
 
     @Override
+    public AbstractRegexBuilder setExactLengthIfSupported(int length) {
+        if(super.removeMinOrMaxLengthIfExist()) {
+            logger.warn("Remove min or max length option for alphabet to set exact length");
+        }
+
+        super.removeExactLengthIfExist();
+
+        String value = this.getValue();
+
+        int end = value.indexOf(")");
+        String prefix = value.substring(0, end);
+        String middle = super.getExactLength(length);
+        String postfix = value.substring(end);
+
+        String newVal = prefix + middle + postfix;
+
+        super.setValue(newVal);
+        logger.debug("Alphabet regex after set exact length : {}", newVal);
+        return this;
+    }
+
+    @Override
     public AbstractRegexBuilder setMaxLengthIfSupported(int length) {
+
+        if(super.removeExactLengthIfExist()) {
+            logger.warn("Remove exact length option for alphabet to set max  length");
+        }
 
         String value = super.getValue();
 
@@ -33,11 +59,14 @@ public class RegexAlphabetBuilder extends AbstractRegexBuilder {
         super.setValue(newVal);
         logger.debug("Alphabet regex after set max length : {}", newVal);
         return this;
-
     }
 
     @Override
     public AbstractRegexBuilder setMinLengthIfSupported(int length) {
+
+        if(super.removeExactLengthIfExist()) {
+            logger.warn("Remove exact length option for alphabet to set min  length");
+        }
 
         String value = super.getValue();
 
@@ -65,4 +94,5 @@ public class RegexAlphabetBuilder extends AbstractRegexBuilder {
         logger.warn("Can't set date format to Alphabet");
         return this;
     }
+
 }

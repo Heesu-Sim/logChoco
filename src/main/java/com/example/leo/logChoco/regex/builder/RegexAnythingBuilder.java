@@ -9,6 +9,11 @@ public class RegexAnythingBuilder extends AbstractRegexBuilder {
     }
 
     @Override
+    public AbstractRegexBuilder setExactLengthIfSupported(int length) {
+        return this;
+    }
+
+    @Override
     public AbstractRegexBuilder setMaxLengthIfSupported(int length) {
         return this;
     }

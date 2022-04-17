@@ -6,6 +6,8 @@ package com.example.leo.logChoco.regex.builder;
 public enum FieldOption {
     // can be empty,
     EMPTY,
+    // length
+    LENGTH,
     //max length
     MAXLENGTH,
     //min length,

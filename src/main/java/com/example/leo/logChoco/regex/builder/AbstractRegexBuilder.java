@@ -37,6 +37,8 @@ abstract public class AbstractRegexBuilder {
 
             if(FieldOption.EMPTY.equals(option)) {
                 this.addPossibleEmpty(Boolean.parseBoolean(optionValue));
+            } else if(FieldOption.LENGTH.equals(option)) {
+                this.setExactLengthIfSupported(Integer.parseInt(optionValue));
             } else if(FieldOption.MAXLENGTH.equals(option)) {
                 this.setMaxLengthIfSupported(Integer.parseInt(optionValue));
             } else if(FieldOption.MINLENGTH.equals(option)) {
@@ -53,7 +55,7 @@ abstract public class AbstractRegexBuilder {
     /**
      * Set if a field can be omitted for all Fields except BOOLEAN
      * */
-    public AbstractRegexBuilder addPossibleEmpty(boolean isPossibleEmpty) {
+    protected AbstractRegexBuilder addPossibleEmpty(boolean isPossibleEmpty) {
 
         if(isPossibleEmpty) {
             String value = getValue();
@@ -64,6 +66,47 @@ abstract public class AbstractRegexBuilder {
         }
         return this;
     }
+
+    protected String getExactLength(int length) {
+        return "{" + length + "}";
+    }
+
+    /**
+     * Remove min or max length of digits or characters and return true if removed
+     * */
+    protected boolean removeMinOrMaxLengthIfExist() {
+        boolean result = false;
+        try {
+            String subStr = value.substring(value.indexOf("{"), value.indexOf("}") + 1);
+            if (subStr.contains(",")) {
+                value = value.replace(subStr, "");
+                result = true;
+            }
+        } catch(StringIndexOutOfBoundsException e) {
+        }
+        return result;
+    }
+
+    /**
+     * Remove length of digits or characters and return true if removed
+     * */
+    protected boolean removeExactLengthIfExist() {
+        boolean result = false;
+        try {
+            String subStr = value.substring(value.indexOf("{"), value.indexOf("}") + 1);
+            if (!subStr.contains(",")) {
+                value = value.replace(subStr, "");
+                result = true;
+            }
+        } catch(StringIndexOutOfBoundsException e) {
+        }
+        return result;
+    }
+
+    /**
+     * Set exact length of digits or characters
+     * */
+    abstract public AbstractRegexBuilder setExactLengthIfSupported(int length);
 
     /**
      * Set maximum number of digits or characters
