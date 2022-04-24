@@ -1,5 +1,6 @@
 package com.example.leo.logChoco.format;
 
+import com.example.leo.logChoco.config.entity.LeefInfo;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.entity.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
@@ -21,23 +22,23 @@ public class LeefLogFormatter extends AbstractFormatter {
     private final String DEFAULT_LEEF_VERSION = "2.0";
     private final String DEFAULT_LEEF_DELIMITER_FOR_LEEF = "\t";
     private String delimiter;
+    private LeefInfo leefInfo;
 
     public LeefLogFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
         super(outboundLogInfo, fieldInfo, inboundLog);
+        leefInfo = super.outboundLogInfo.getLeefInfo();
 
-        String configDelimiter = super.outboundLogInfo.getDelimiter();
+        String configDelimiter = leefInfo.getDelimiter();
         delimiter = StringUtils.hasText(configDelimiter) ? configDelimiter : DEFAULT_LEEF_DELIMITER_FOR_LEEF;
     }
 
     @Override
     protected String createHeader() {
-        String leefVersion = super.outboundLogInfo.getLeefVersion();
-        String vendor = super.outboundLogInfo.getVendor();
-        String productName = super.outboundLogInfo.getProductName();
-        String productVersion = super.outboundLogInfo.getProductVersion();
-        boolean includeHeader = super.outboundLogInfo.isIncludeSyslogHeader();
-
-
+        String leefVersion = leefInfo.getLeefVersion();
+        String vendor = leefInfo.getVendor();
+        String productName = leefInfo.getProductName();
+        String productVersion = leefInfo.getProductVersion();
+        boolean includeHeader = leefInfo.isIncludeSyslogHeader();
 
         // check if leef version is valid.
         if(!"1.0".equals(leefVersion) && !"2.0".equals(leefVersion)) {
@@ -49,10 +50,8 @@ public class LeefLogFormatter extends AbstractFormatter {
 
         // create syslog header
         if(includeHeader) {
-            SimpleDateFormat df = new SimpleDateFormat("MMM dd HH:mm:ss", new Locale("en", "US"));
-            String timeStamp = df.format(Calendar.getInstance().getTime());
-
-            sb.append(timeStamp).append(" ").append(super.remoteAddr).append(" ");
+            String syslogHeader = getSyslogHeader();
+            sb.append(syslogHeader);
         }
 
         //create LEEF header
@@ -71,6 +70,17 @@ public class LeefLogFormatter extends AbstractFormatter {
         return sb.toString();
     }
 
+    protected String getSyslogHeader() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getTimeStamp()).append(" ").append(super.remoteAddr).append(" ");
+        return sb.toString();
+    }
+
+    protected String getTimeStamp() {
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd HH:mm:ss", new Locale("en", "US"));
+        String timeStamp = df.format(Calendar.getInstance().getTime());
+        return timeStamp;
+    }
 
     @Override
     protected String createTail() {

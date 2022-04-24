@@ -85,10 +85,7 @@ abstract public class AbstractFormatter {
         sb.append(key).append(delimiter).append(value).toString();
 
         String result = sb.toString();
-//        if(needDoubleQuote) {
-//            result = result.replace(key, "\"" + key + "\"");
-////                    .replace(value, "\"" + value + "\"");
-//        }
+
         return result;
     }
 

@@ -28,6 +28,9 @@ public class ReadFieldInfo {
     private OutboundLogFormat logFormat;
     private int idIndex;
 
+    // used for CEF format
+    private int severityIndex;
+
     private String formatInRegex;
     private Pattern pattern;
 

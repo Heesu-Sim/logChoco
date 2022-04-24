@@ -2,7 +2,7 @@ package com.example.leo.logChoco.config.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Class that has information about sender.
@@ -12,20 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Setter
 public class OutboundLogInfo {
 
-    // version of leef format
-    private String leefVersion;
-    // name of vendor that send logs
-    private String vendor;
-    // name of product that send logs
-    private String productName;
-    // version of product that send logs
-    private String productVersion;
-    // delimiter for outbound log.
-    private String delimiter;
-
-
-    // include syslog header or not
-    private boolean includeSyslogHeader;
-
+    @NestedConfigurationProperty
+    private LeefInfo leefInfo;
+    @NestedConfigurationProperty
+    private CefInfo cefInfo;
 
 }
