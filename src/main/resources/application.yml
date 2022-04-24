@@ -16,7 +16,7 @@ config:
       include-syslog-header: true
 
     cef-info:
-      defaultSeverity: 0
+      defaultSeverity: VERY-LOW
 
 
   #set server information which receives logs from.
