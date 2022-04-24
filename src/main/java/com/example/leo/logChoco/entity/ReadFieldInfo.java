@@ -30,6 +30,7 @@ public class ReadFieldInfo {
 
     // used for CEF format
     private int severityIndex = -1;
+    private int eventNameIndex = -1;
 
     private String formatInRegex;
     private Pattern pattern;

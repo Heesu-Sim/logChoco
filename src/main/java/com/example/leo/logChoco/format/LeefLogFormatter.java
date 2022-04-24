@@ -51,7 +51,7 @@ public class LeefLogFormatter extends AbstractFormatter {
         // create syslog header
         if(includeHeader) {
             String syslogHeader = getSyslogHeader();
-            sb.append(syslogHeader);
+            sb.append(syslogHeader).append(" ");
         }
 
         //create LEEF header

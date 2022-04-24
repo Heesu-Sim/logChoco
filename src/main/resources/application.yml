@@ -11,12 +11,23 @@ config:
       leef-version: 2.0
       vendor: Leo
       product-name: log-choco
-      product-version: 2.0
+      product-version: 1.0.0
       delimiter: ','
       include-syslog-header: true
 
     cef-info:
-      defaultSeverity: VERY-LOW
+      vendor: Leo
+      product-name: log-choco
+      product-version: 1.0.0
+
+      default-severity: VERY-LOW
+      default-event-name: default event name
+      defualt-event-name-mapper:
+        accessAllow: allow access
+        accessDeny: deny Access
+        aceessWarn: warn Access
+
+      include-syslog-header: true
 
 
   #set server information which receives logs from.

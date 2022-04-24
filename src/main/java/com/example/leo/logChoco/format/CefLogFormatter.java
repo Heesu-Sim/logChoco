@@ -5,25 +5,58 @@ import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.entity.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class CefLogFormatter extends LeefLogFormatter{
 
     private CefInfo cefInfo;
-    private String severity;
+    private int severityIndex;
+    private int eventNameIndex;
+
+    private String DEFAULT_CEF_VERSION = "0";
 
     public CefLogFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
         super(outboundLogInfo, fieldInfo, inboundLog);
         this.cefInfo = outboundLogInfo.getCefInfo();
-        int severityIndex = fieldInfo.getSeverityIndex();
-
-        // if index of severity is not defined, get default value from yml file.
-        severity = severityIndex < 0? cefInfo.getDefaultSeverity() : logTextList.get(severityIndex);
+        this.severityIndex = fieldInfo.getSeverityIndex();
+        this.eventNameIndex = fieldInfo.getEventNameIndex();
     }
 
     @Override
     protected String createHeader() {
 
+        StringBuilder sb = new StringBuilder();
 
-        return null;
+        String vendor = cefInfo.getVendor();
+        String productName = cefInfo.getProductName();
+        String productVersion = cefInfo.getProductVersion();
+
+        // If index of severity is not defined, get default value from yml file.
+        String severity = severityIndex < 0? cefInfo.getDefaultSeverity() : logTextList.get(severityIndex);
+
+        /* If index of event name is not defined, get it from 'defaultEventNameMapper' or 'defaultEventName' in yml file.
+           Search name from 'defaultEventNameMapper' with eventId and if no name is found, set eventName with 'defaultEventName'
+        * */
+        String eventName;
+        if(eventNameIndex >= 0) {
+            eventName = logTextList.get(eventNameIndex);
+        } else {
+            Map<String, String> nameMapper = cefInfo.getDefualtEventNameMapper();
+
+            eventName = Optional.ofNullable(nameMapper.get(eventId)).orElse(cefInfo.getDefaultEventName());
+        }
+
+        if(cefInfo.isIncludeSyslogHeader()) {
+            String syslogHeader = super.getSyslogHeader();
+            sb.append(syslogHeader).append(" ");
+        }
+
+        sb.append("CEF:").append(DEFAULT_CEF_VERSION).append("|").append(vendor).append("|")
+                .append(productName).append("|").append(productVersion).append("|").append(super.eventId)
+                .append("|").append(eventName).append("|").append(severity).append("|");
+
+        return sb.toString();
     }
 
     @Override

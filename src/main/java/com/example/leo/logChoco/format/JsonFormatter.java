@@ -12,7 +12,6 @@ public class JsonFormatter extends AbstractFormatter {
     public JsonFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
         super(outboundLogInfo, fieldInfo, inboundLog);
 
-//        String configDelimiter = super.outboundLogInfo.getDelimiter();
         delimiter = DEFAULT_LEEF_DELIMITER_FOR_JSON;
     }
 
