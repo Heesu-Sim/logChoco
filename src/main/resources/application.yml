@@ -3,7 +3,7 @@ server:
   port: 30001
 
 config:
-  file-path: /Users/Heesu/Documents/file/format.json
+  file-path: /Users/Documents/file/format.json
 
   # create log header or  required information.
   outbound-log-info:
@@ -40,8 +40,8 @@ config:
 
   #set servers information which send logs to
   target-server:
-    - ip: 127.0.0.1
-      port: 35000
+    - ip: 192.168.219.102
+      port: 30001
       protocol: TCP
 
 
