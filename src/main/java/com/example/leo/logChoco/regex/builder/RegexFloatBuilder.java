@@ -1,14 +1,15 @@
 package com.example.leo.logChoco.regex.builder;
 
+import com.example.leo.logChoco.regex.FieldsInRegex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RegexDoubleBuilder extends AbstractRegexBuilder{
+public class RegexFloatBuilder extends AbstractRegexBuilder{
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected RegexDoubleBuilder(String value) {
-        super(value);
+    protected RegexFloatBuilder() {
+        super(FieldsInRegex.REGEX_FLOAT);
     }
 
     @Override
