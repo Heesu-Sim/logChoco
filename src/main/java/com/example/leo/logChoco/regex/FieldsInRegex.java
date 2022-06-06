@@ -9,9 +9,9 @@ import lombok.Getter;
 @Getter
 public class FieldsInRegex {
 
-    public final static String REGEX_FLOAT = "([+-]?([0-9]*[.])?[0-9]+)";
+    public final static String REGEX_FLOAT = "([+-]?([0-9]*[.])[0-9]+)";
     public final static String REGEX_INTEGER = "((-+)?([0-9]+))";
-    public final static String REGEX_BOOLEAN = "(true|false|0|1)";
+    public final static String REGEX_BOOLEAN = "(true|false|0|1|TRUE|FALSE|True|False)";
     public final static String REGEX_IPV4 = "((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
     public final static String REGEX_ANYTHING = "(.*)";
     public final static String REGEX_ALPHABET = "([a-zA-Z])";
