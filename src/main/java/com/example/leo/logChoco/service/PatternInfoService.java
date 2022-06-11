@@ -3,8 +3,9 @@ package com.example.leo.logChoco.service;
 import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.entity.BufferInfo;
+import com.example.leo.logChoco.entity.log.LogInfo;
 import com.example.leo.logChoco.regex.FieldType;
-import com.example.leo.logChoco.entity.InboundLog;
+import com.example.leo.logChoco.entity.log.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
 import com.example.leo.logChoco.exception.InvalidLogFormatException;
 import com.example.leo.logChoco.format.LogFormatterFactory;
@@ -44,7 +45,7 @@ public class PatternInfoService {
     private final MonitorService monitorService;
 
     @Getter
-    protected Sinks.Many<InboundLog> sink;
+    protected Sinks.Many<LogInfo> sink;
 
     // 모든 로그 포맷 정보 담고있는 리스트.
     @Getter
@@ -60,21 +61,21 @@ public class PatternInfoService {
         initRegexSetting();
 
         sink = Sinks.many().unicast().onBackpressureBuffer();
-        Flux<List<InboundLog>> flux = sink.asFlux().bufferTimeout(BufferInfo.BUFFER_SIZE, BufferInfo.BUFFER_DURATION_SECOND);
+        Flux<List<LogInfo>> flux = sink.asFlux().bufferTimeout(BufferInfo.BUFFER_SIZE, BufferInfo.BUFFER_DURATION_SECOND);
         flux.subscribe(consumeLogs());
     }
 
     /**
      * send signal to MonitorService to get data on inbound logs.
      * */
-    private void sendSignalToMonitor(List<InboundLog> logs) {
+    private void sendSignalToMonitor(List<LogInfo> logs) {
         monitorService.getInboundSink().emitNext(logs, Sinks.EmitFailureHandler.FAIL_FAST);
     }
 
     /**
      * Consumer for inbound logs from inboundService.java
      * */
-    private Consumer<List<InboundLog>> consumeLogs() {
+    private Consumer<List<LogInfo>> consumeLogs() {
         return logs -> {
             sendSignalToMonitor(logs);
             getFormattedLogText(logs);
@@ -86,16 +87,16 @@ public class PatternInfoService {
      * Iterate fieldInfoList to check if the log matches any log pattern.
      * If it matches, return formatted log.
      * */
-    private void getFormattedLogText(List<InboundLog> inboundLogList) {
+    private void getFormattedLogText(List<LogInfo> inboundLogList) {
 
 
-        Flux<InboundLog> flux = Flux.fromStream(inboundLogList.stream());
+        Flux<LogInfo> flux = Flux.fromStream(inboundLogList.stream());
 
         flux.doOnComplete(() -> {
             logger.debug("Change log format. size : {}", inboundLogList.size());
         }).subscribe(inboundLog -> {
             Optional<ReadFieldInfo> optional = fieldInfoList.stream()
-                    .filter(info -> info.checkIfMatchLogRegex(inboundLog.getReceivedLog()))
+                    .filter(info -> info.checkIfMatchLogRegex(inboundLog.getLog()))
                     .findFirst();
 
             if(optional.isPresent()) {
@@ -103,7 +104,8 @@ public class PatternInfoService {
                 OutboundLogInfo outboundLogInfo = logChocoConfig.getOutboundLogInfo();
 
                 String formattedLog = LogFormatterFactory.getFormatter(outboundLogInfo, fieldInfo, inboundLog).getFormattedLog();
-                outboundLogService.getSink().emitNext(formattedLog, Sinks.EmitFailureHandler.FAIL_FAST);
+                System.out.println("formatted : " + formattedLog);
+//                outboundLogService.getSink().emitNext(formattedLog, Sinks.EmitFailureHandler.FAIL_FAST);
             }
         });
     }

@@ -2,7 +2,8 @@ package com.example.leo.logChoco.service;
 
 import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.ServerInfo;
-import com.example.leo.logChoco.entity.InboundLog;
+import com.example.leo.logChoco.entity.log.InboundLog;
+import com.example.leo.logChoco.entity.log.LogInfo;
 import com.example.leo.logChoco.inbound.InboundHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
@@ -32,7 +33,7 @@ public class InboundService {
     private final PatternInfoService patternInfoService;
     private final LogChocoConfig logChocoConfig;
     private List<ServerInfo> servers;
-    private Sinks.Many<InboundLog> nextSink;
+    private Sinks.Many<LogInfo> nextSink;
 
     @PostConstruct
     public void init() {

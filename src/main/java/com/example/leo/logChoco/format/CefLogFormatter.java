@@ -2,8 +2,9 @@ package com.example.leo.logChoco.format;
 
 import com.example.leo.logChoco.config.entity.CefInfo;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
-import com.example.leo.logChoco.entity.InboundLog;
+import com.example.leo.logChoco.entity.log.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
+import com.example.leo.logChoco.entity.log.LogInfo;
 
 import java.util.Map;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public class CefLogFormatter extends LeefLogFormatter{
 
     private String DEFAULT_CEF_VERSION = "0";
 
-    public CefLogFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
+    public CefLogFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, LogInfo inboundLog) {
         super(outboundLogInfo, fieldInfo, inboundLog);
         this.cefInfo = outboundLogInfo.getCefInfo();
         this.severityIndex = fieldInfo.getSeverityIndex();

@@ -1,10 +1,9 @@
 package com.example.leo.logChoco.service;
 
-import com.example.leo.logChoco.entity.BufferInfo;
-import com.example.leo.logChoco.entity.InboundLog;
+import com.example.leo.logChoco.entity.log.InboundLog;
 import com.example.leo.logChoco.entity.MonitorInfo;
+import com.example.leo.logChoco.entity.log.LogInfo;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
@@ -17,20 +16,21 @@ import java.util.function.Consumer;
 public class MonitorService {
 
     @Getter
-    private Sinks.Many<List<InboundLog>> inboundSink;
+    private Sinks.Many<List<LogInfo>> inboundSink;
 
 
     @PostConstruct
     public void init() {
         inboundSink = Sinks.many().unicast().onBackpressureBuffer();
-        Flux<List<InboundLog>> inboundFlux = inboundSink.asFlux();
-        inboundFlux.subscribe(consumeInboundLog());
+        Flux<List<LogInfo>> inboundFlux = inboundSink.asFlux();
+        inboundFlux.subscribe(consumeLog());
 
     }
 
-    private Consumer<List<InboundLog>> consumeInboundLog() {
+    private Consumer<List<LogInfo>> consumeLog() {
         return list -> {
-//          inboundMonitorInfo += list.size();
+
+
         };
     }
 

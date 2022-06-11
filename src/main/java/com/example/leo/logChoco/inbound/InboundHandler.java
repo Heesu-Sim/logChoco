@@ -1,6 +1,7 @@
 package com.example.leo.logChoco.inbound;
 
-import com.example.leo.logChoco.entity.InboundLog;
+import com.example.leo.logChoco.entity.log.InboundLog;
+import com.example.leo.logChoco.entity.log.LogInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -12,8 +13,8 @@ import java.net.InetSocketAddress;
 
 public class InboundHandler extends ChannelInboundHandlerAdapter {
 
-    private Sinks.Many<InboundLog> sink;
-    public InboundHandler(Sinks.Many<InboundLog> sink) {
+    private Sinks.Many<LogInfo> sink;
+    public InboundHandler(Sinks.Many<LogInfo> sink) {
         this.sink = sink;
     }
 

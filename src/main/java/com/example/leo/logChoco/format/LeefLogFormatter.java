@@ -2,8 +2,9 @@ package com.example.leo.logChoco.format;
 
 import com.example.leo.logChoco.config.entity.LeefInfo;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
-import com.example.leo.logChoco.entity.InboundLog;
+import com.example.leo.logChoco.entity.log.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
+import com.example.leo.logChoco.entity.log.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -24,7 +25,7 @@ public class LeefLogFormatter extends AbstractFormatter {
     private String delimiter;
     private LeefInfo leefInfo;
 
-    public LeefLogFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
+    public LeefLogFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, LogInfo inboundLog) {
         super(outboundLogInfo, fieldInfo, inboundLog);
         leefInfo = super.outboundLogInfo.getLeefInfo();
 

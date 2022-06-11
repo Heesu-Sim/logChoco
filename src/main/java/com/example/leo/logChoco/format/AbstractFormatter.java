@@ -1,8 +1,9 @@
 package com.example.leo.logChoco.format;
 
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
-import com.example.leo.logChoco.entity.InboundLog;
+import com.example.leo.logChoco.entity.log.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
+import com.example.leo.logChoco.entity.log.LogInfo;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -19,12 +20,12 @@ abstract public class AbstractFormatter {
     protected ReadFieldInfo fieldInfo;
     protected String remoteAddr;
 
-    public AbstractFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, InboundLog inboundLog) {
-        this.logTextList = changeLogTextIntoList(fieldInfo, inboundLog.getReceivedLog());
+    public AbstractFormatter(OutboundLogInfo outboundLogInfo, ReadFieldInfo fieldInfo, LogInfo inboundLog) {
+        this.logTextList = changeLogTextIntoList(fieldInfo, inboundLog.getLog());
         this.outboundLogInfo = outboundLogInfo;
         this.fieldInfo = fieldInfo;
         this.eventId = logTextList.get(fieldInfo.getIdIndex());
-        this.remoteAddr = inboundLog.getRemoteAddr();
+        this.remoteAddr = inboundLog.getIp();
     }
 
     /**
