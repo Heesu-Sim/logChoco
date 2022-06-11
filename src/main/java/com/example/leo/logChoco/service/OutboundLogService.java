@@ -1,4 +1,4 @@
-package com.example.leo.logChoco.sender.service;
+package com.example.leo.logChoco.service;
 
 import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.ServerInfo;

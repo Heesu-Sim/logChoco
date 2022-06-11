@@ -1,4 +1,4 @@
-package com.example.leo.logChoco.reader.service;
+package com.example.leo.logChoco.service;
 
 import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
@@ -10,7 +10,6 @@ import com.example.leo.logChoco.exception.InvalidLogFormatException;
 import com.example.leo.logChoco.format.LogFormatterFactory;
 import com.example.leo.logChoco.regex.builder.AbstractRegexBuilder;
 import com.example.leo.logChoco.regex.builder.RegexBuilderFactory;
-import com.example.leo.logChoco.sender.service.OutboundLogService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -42,6 +41,7 @@ public class PatternInfoService {
 
     private final LogChocoConfig logChocoConfig;
     private final OutboundLogService outboundLogService;
+    private final MonitorService monitorService;
 
     @Getter
     protected Sinks.Many<InboundLog> sink;
@@ -65,10 +65,18 @@ public class PatternInfoService {
     }
 
     /**
+     * send signal to MonitorService to get data on inbound logs.
+     * */
+    private void sendSignalToMonitor(List<InboundLog> logs) {
+        monitorService.getInboundSink().emitNext(logs, Sinks.EmitFailureHandler.FAIL_FAST);
+    }
+
+    /**
      * Consumer for inbound logs from inboundService.java
      * */
     private Consumer<List<InboundLog>> consumeLogs() {
         return logs -> {
+            sendSignalToMonitor(logs);
             getFormattedLogText(logs);
         };
     }

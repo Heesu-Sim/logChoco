@@ -8,12 +8,14 @@ import lombok.Setter;
 public class InboundLog {
 
     private String remoteAddr;
+    private int remotePort;
     private String receivedLog;
 
     public InboundLog() {}
 
-    public InboundLog(String remoteAddr, String receivedLog) {
+    public InboundLog(String remoteAddr, int remotePort, String receivedLog) {
         this.receivedLog = receivedLog;
         this.remoteAddr = remoteAddr;
+        this.remotePort = remotePort;
     }
 }

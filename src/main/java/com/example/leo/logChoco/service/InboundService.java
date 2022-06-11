@@ -1,9 +1,9 @@
-package com.example.leo.logChoco.reader.service;
+package com.example.leo.logChoco.service;
 
 import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.ServerInfo;
 import com.example.leo.logChoco.entity.InboundLog;
-import com.example.leo.logChoco.reader.InboundHandler;
+import com.example.leo.logChoco.inbound.InboundHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
