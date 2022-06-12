@@ -11,18 +11,18 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class MonitorHandler {
-
     private final MonitorService monitorService;
 
     public Mono<ServerResponse> getInboundMonitor(ServerRequest request) {
+
         return ServerResponse.ok().contentType(MediaType.TEXT_EVENT_STREAM)
                 .body(Flux.interval(Duration.ofSeconds(1)).map(t -> {
                     return monitorService.getInboundMonitorInfo();
-                }), MonitorInfo.class);
+                }), Map.class);
     }
-
 }
