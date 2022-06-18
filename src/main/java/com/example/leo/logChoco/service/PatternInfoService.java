@@ -11,6 +11,7 @@ import com.example.leo.logChoco.exception.InvalidLogFormatException;
 import com.example.leo.logChoco.format.LogFormatterFactory;
 import com.example.leo.logChoco.regex.builder.AbstractRegexBuilder;
 import com.example.leo.logChoco.regex.builder.RegexBuilderFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class PatternInfoService {
 
     private final LogChocoConfig logChocoConfig;
     private final OutboundLogService outboundLogService;
+    private final SettingService settingService;
     private final MonitorService monitorService;
 
     @Getter
@@ -194,18 +196,15 @@ public class PatternInfoService {
         String filePath = logChocoConfig.getFilePath();
         logger.info("Read configuration file -> {}", filePath);
         ObjectMapper mapper = new ObjectMapper();
-        Path path = Paths.get(filePath);
-        StringBuilder sb = new StringBuilder();
 
-        try (Stream<String>lines = Files.lines(path)) {
-            lines.forEach(s -> sb.append(s));
-            return mapper.readValue(sb.toString(), new TypeReference<List<ReadFieldInfo>>() {});
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        String formatSetting =  settingService.getFormatSetting();
+        try {
+            return mapper.readValue(formatSetting, new TypeReference<List<ReadFieldInfo>>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
-    }
 
+    }
 
     private boolean validatePattern(String input, String pattern) {
         pattern = "^" + pattern + "$";
@@ -213,7 +212,4 @@ public class PatternInfoService {
         Matcher m = p.matcher(input);
         return m.matches();
     }
-
-
-
 }

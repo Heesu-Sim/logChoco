@@ -1,6 +1,7 @@
 package com.example.leo.logChoco.router;
 
 import com.example.leo.logChoco.router.handler.MonitorHandler;
+import com.example.leo.logChoco.router.handler.SettingHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -8,12 +9,12 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
-public class MonitorRouter {
+public class SettingRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> monitorRouterInfo(MonitorHandler monitorHandler) {
+    public RouterFunction<ServerResponse> settingRouterInfo(SettingHandler settingHandler) {
         return RouterFunctions.route()
-                .GET("/monitor/inbound/log", request -> monitorHandler.getInboundMonitor(request))
+                .GET("/setting/log/file", request -> settingHandler.getFileList(request))
                 .build();
     }
 }
