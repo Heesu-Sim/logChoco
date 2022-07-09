@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 public class LogChocoConfig {
     private String filePath;
+    private List<String> allowCorsOrigins;
 
     @NestedConfigurationProperty
     private OutboundLogInfo outboundLogInfo;

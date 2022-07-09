@@ -3,7 +3,11 @@ server:
   port: 30001
 
 config:
-  file-path: /Users/Documents/file/format.json
+
+  allow-cors-origins:
+    - http://localhost:3000
+
+    file-path: /Users/Documents/file/format.json
 
   # create log header or  required information.
   outbound-log-info:

@@ -35,6 +35,11 @@ public class SettingService {
 
         try (Stream<String> lines = Files.lines(path)) {
             String json = lines.collect(Collectors.joining());
+
+            if(json.contains("\t")) {
+                json = json.replaceAll("\t", "");
+            }
+
             return json;
         } catch (IOException e) {
             e.printStackTrace();
