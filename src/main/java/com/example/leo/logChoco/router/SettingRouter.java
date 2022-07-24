@@ -14,7 +14,8 @@ public class SettingRouter {
     @Bean
     public RouterFunction<ServerResponse> settingRouterInfo(SettingHandler settingHandler) {
         return RouterFunctions.route()
-                .GET("/setting/log/file", request -> settingHandler.getFileList(request))
+                .GET("/setting/log/file", request -> settingHandler.getSettingFile(request))
+                .POST("/setting/log/file", request -> settingHandler.saveSettingFile(request))
                 .build();
     }
 }

@@ -24,15 +24,13 @@ public class WebFluxConfig implements WebFluxConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
 
         List<String> allowCorsOrigins = logChocoConfig.getAllowCorsOrigins();
-        CorsRegistration registration = registry.addMapping("/**");
+        CorsRegistration registration = registry.addMapping("/**")
+                .allowedMethods("*")
+                .allowCredentials(true).maxAge(3600);
 
         allowCorsOrigins.stream().forEach(origin ->   {
             registration.allowedOrigins(origin.trim());
             logger.debug("add Allow-Cors-Origin: {}", origin);
         });
-
-        registration.allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowCredentials(true).maxAge(3600)
-                .allowedHeaders("Access-Control-Allow-Origin");
     }
 }

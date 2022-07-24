@@ -193,15 +193,15 @@ public class PatternInfoService {
 
     private List<ReadFieldInfo> readPatternInfoFile() {
 
-        String filePath = logChocoConfig.getFilePath();
-        logger.info("Read configuration file -> {}", filePath);
+        Path filePath = settingService.getInboundSettingPath();
+        logger.info("Read configuration file -> {}", filePath.toString());
         ObjectMapper mapper = new ObjectMapper();
 
         String formatSetting =  settingService.getFormatSetting();
         try {
             return mapper.readValue(formatSetting, new TypeReference<List<ReadFieldInfo>>() {});
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            return new ArrayList<>();
         }
 
     }
