@@ -4,6 +4,7 @@ import com.example.leo.logChoco.config.LogChocoConfig;
 import com.example.leo.logChoco.config.entity.OutboundLogInfo;
 import com.example.leo.logChoco.entity.BufferInfo;
 import com.example.leo.logChoco.entity.log.LogInfo;
+import com.example.leo.logChoco.file.InboundConfigFileInfo;
 import com.example.leo.logChoco.regex.FieldType;
 import com.example.leo.logChoco.entity.log.InboundLog;
 import com.example.leo.logChoco.entity.ReadFieldInfo;
@@ -46,12 +47,10 @@ public class PatternInfoService {
     private final SettingService settingService;
     private final MonitorService monitorService;
 
+    private final InboundConfigFileInfo inboundConfigFileInfo;
+
     @Getter
     protected Sinks.Many<LogInfo> sink;
-
-    // 모든 로그 포맷 정보 담고있는 리스트.
-    @Getter
-    private List<ReadFieldInfo> fieldInfoList;
 
     // Separater that divides key and value for each option.
     private final String DEFAULT_OPTION_KEY_VALUE_SEPERATOR = ":";
@@ -97,7 +96,7 @@ public class PatternInfoService {
         flux.doOnComplete(() -> {
             logger.debug("Change log format. size : {}", inboundLogList.size());
         }).subscribe(inboundLog -> {
-            Optional<ReadFieldInfo> optional = fieldInfoList.stream()
+            Optional<ReadFieldInfo> optional = inboundConfigFileInfo.getInboundLogConfigs().stream()
                     .filter(info -> info.checkIfMatchLogRegex(inboundLog.getLog()))
                     .findFirst();
 
@@ -107,6 +106,7 @@ public class PatternInfoService {
 
                 String formattedLog = LogFormatterFactory.getFormatter(outboundLogInfo, fieldInfo, inboundLog).getFormattedLog();
                 System.out.println("formatted : " + formattedLog);
+                monitorService.getRealtimeSink().emitNext(formattedLog, Sinks.EmitFailureHandler.FAIL_FAST);
 //                outboundLogService.getSink().emitNext(formattedLog, Sinks.EmitFailureHandler.FAIL_FAST);
             }
         });
@@ -118,9 +118,9 @@ public class PatternInfoService {
      * when process starts
      * */
     private void initRegexSetting() {
-        fieldInfoList = readPatternInfoFile();
+        inboundConfigFileInfo.setInboundLogConfigs(readPatternInfoFile());
 
-        fieldInfoList.stream().forEach(fieldInfo -> {
+        inboundConfigFileInfo.getInboundLogConfigs().stream().forEach(fieldInfo -> {
             try {
                 setRegexFormat(fieldInfo);
             } catch (InvalidLogFormatException e) {

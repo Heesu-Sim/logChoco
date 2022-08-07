@@ -14,6 +14,7 @@ public class MonitorRouter {
     public RouterFunction<ServerResponse> monitorRouterInfo(MonitorHandler monitorHandler) {
         return RouterFunctions.route()
                 .GET("/monitor/inbound/log", request -> monitorHandler.getInboundMonitor(request))
+                .GET("/monitor/realtime/logs", request -> monitorHandler.getRealtimeLogs(request))
                 .build();
     }
 }
